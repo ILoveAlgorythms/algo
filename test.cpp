@@ -1,19 +1,13 @@
 #include<iostream>
 #include<vector>
-#include<stack>
+#include<deque>
 
-void foo(std::deque<int> &s) {
-  for (auto i: s) {
-    std::cout << i << " ";
-  }
-}
 
 
 int main() {
-  std::deque<int> d;
-  d.push_back(1);
-  d.push_back(2);
-  d.push_back(3);
-  foo(d);
+  std::vector<std::vector<int>> v;
+  v.push_back(std::vector<int> ());
+  v[0].push_back(1);
+  std::cout << v[0][0];
   return 0;
 }

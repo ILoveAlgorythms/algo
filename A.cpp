@@ -10,7 +10,7 @@ void print(std::deque<int>& s) {
 }
 
 struct Graph {
-  enum color {white, grey, black};
+  enum color {White, grey, Black};
   std::vector<color> vert_colors;
   std::vector<std::vector<int>> verticies;
   Graph(int n, int m) {
@@ -31,7 +31,7 @@ struct Graph {
   bool dfs(int vert, int finish, std::deque<int>& s) {
     s.push_back(vert);//
     
-    if (vert_colors[vert] != white) {
+    if (vert_colors[vert] != White) {
       s.pop_back();
       return false;
     }
@@ -48,7 +48,7 @@ struct Graph {
         return true;
       }
     }
-    vert_colors[vert] = black;
+    vert_colors[vert] = Black;
 
     s.pop_back();//
 
@@ -56,7 +56,7 @@ struct Graph {
   }
 
   void findPath(int start, int finish) {
-    vert_colors.resize(vert_colors.size(), white);
+    vert_colors.resize(vert_colors.size(), White);
     std::deque<int> s;
     if (dfs(start, finish, s)) {
       print(s);
