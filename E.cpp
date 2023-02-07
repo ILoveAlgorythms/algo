@@ -72,7 +72,6 @@ int main() {
   Graph g(n, m);
   if (g.Do()) {
     std::cout << "-1\n";
-    return 0;
   }
   return 0;
 }
