@@ -193,23 +193,5 @@ size_t CountOfComponents(Graph& graph) {
 
 
 int main() {
-  ListGraph<size_t> g({0,1,2,3,4}, {{0,1}, {1,2}, {3,4}, {0, 2}, {0, 7}});
-  using EType = typename ListGraph<size_t>::EdgeType;
-  for (auto edge : g.NeighboursIt(0, [](const EType& edge) { return true;})) {
-    std::cout << edge.first << " " << edge.second << std::endl;
-  }
-
-  UndirectedListGraph<size_t> g2({0,1,2,3,4}, {{0,1}, {1,2}, {3,4}, {0, 2}});
-  std::cout << CountOfComponents(g2) << std::endl; // must be 2
-
-  UndirectedListGraph<size_t> g3({0,1,2,3,4,5,6,7}, {{0,1}, {1,2}, {3,4}, {0, 2}, {6,7}, {7, 6}});
-  std::cout << CountOfComponents(g3) << std::endl; // must be 4
-
-  UndirectedListGraph<std::string> g4(
-    {"a","b","c","d","e"}, 
-    {{"a","b"}, {"b","c"}, {"d","e"}, {"a", "c"}}
-  );
-  std::cout << CountOfComponents(g4) << std::endl; // must be 2
-
   return 0;
 }
