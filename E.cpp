@@ -2,12 +2,12 @@
 #include <iostream>
 #include <vector>
 
-class Graph {
+struct Graph {
   enum Color { White, Grey, Black };
   std::vector<Color> vert_colors;
   std::vector<std::vector<int>> verticies;
   int verticies_number;
-
+  bool petli = false;
   bool Dfs(int vert, std::deque<int>& s) {
     if (vert_colors[vert] == Grey) {
       return true;
@@ -34,7 +34,6 @@ class Graph {
     std::cout << "\n";
   }
 
-  public:
   Graph(int n, int m) : verticies_number(n) {
     vert_colors.resize(n, White);
     verticies = std::vector<std::vector<int>>(n, std::vector<int>());
@@ -44,11 +43,15 @@ class Graph {
       std::cin >> x >> y;
       --x;
       --y;
+      petli = petli || (x == y);
       verticies[x].push_back(y);
     }
   }
 
   bool Do() {
+    if (petli) {
+      return true;
+    }
     std::deque<int> sorted_verticies;
     for (int i = 0; i < verticies_number; ++i) {
       if (vert_colors[i] != White) {
