@@ -3,7 +3,9 @@
 #include<iostream>
 
 int main() {
-  std::vector<int> aaa;
-  std::cout << aaa.size();
+  std::pair<int, int> a = std::make_pair(1, 2);
+  auto& i = a;
+  i.first = 4;
+  std::cout << (false ? 3 : 4);
   return 0;
 }

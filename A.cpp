@@ -1,7 +1,7 @@
 #include <deque>
 #include <iostream>
 #include <vector>
-
+#define inf 9999999
 class Graph {
  protected:
   int verticies_number_;
@@ -51,7 +51,7 @@ class Graph {
  public:
   Graph(int n, int m) : verticies_number_(n), m_(m) {
     vert_colors_.resize(n, White);
-    dist_.resize(n, 1100000);
+    dist_.resize(n, inf);// NOLINTNEXTLINE
     verticies_.resize(n, std::vector<int>(0));
   }
   friend std::istream& operator>>(std::istream& is, Graph& g);

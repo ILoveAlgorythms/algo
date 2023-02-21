@@ -26,7 +26,7 @@ struct Graph {
     return false;
   }
 
-  void Print(std::deque<int>& s) {
+  static void Print(std::deque<int>& s) {
     while (!s.empty()) {
       std::cout << s.back() + 1 << " ";
       s.pop_back();

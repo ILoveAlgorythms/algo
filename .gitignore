@@ -4,4 +4,5 @@ cmake-build-debug/
 .clang-tidy
 .clang-format
 test.cpp
-output/test
+output/
+fin

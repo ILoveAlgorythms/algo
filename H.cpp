@@ -1,12 +1,18 @@
-#include <vector>
 #include <algorithm>
 #include <iostream>
-// NOLINTNEXTLINE
+#include <vector>
 void Print(std::vector<int>& s) {
-  std::cout << s.size() << "\n";
   std::sort(s.begin(), s.end());
-  for (auto i : s) {// NOLINTNEXTLINE
-    std::cout << i << " ";
+  std::vector<int> ans;
+  for (long unsigned int i = 0; i < s.size(); ++i) {
+    if (i != 0 && s[i] == s[i - 1]) {
+      continue;
+    }
+    ans.push_back(s[i]);
+  }
+  std::cout << ans.size() << "\n";
+  for (long unsigned int i = 0; i < ans.size(); ++i) {
+    std::cout << ans[i] + 1 << "\n";
   }
 }
 
@@ -23,6 +29,7 @@ class Graph {
   std::vector<int> bridges_;
 
   int Dfs(int vert, int edge_id) {
+    int neigboors = 0;
     tup_[vert] = time_;
     tin_[vert] = time_;
     ++time_;
@@ -37,13 +44,17 @@ class Graph {
         tup_[vert] = std::min(tup_[vert], tin_[i.first]);
         continue;
       }
+      ++neigboors;
       auto ans = Dfs(i.first, i.second);
       tup_[vert] = std::min(ans, tup_[vert]);
-      if (tup_[i.first] == tin_[i.first]) {
-        bridges_.push_back(i.second);
+      if (tup_[i.first] >= tin_[vert] && edge_id != -1) {
+        bridges_.push_back(vert);
       }
     }
     vert_colors_[vert] = Black;
+    if (edge_id == -1 && neigboors > 1) {
+      bridges_.push_back(vert);
+    }
     return tup_[vert];
   }
 
