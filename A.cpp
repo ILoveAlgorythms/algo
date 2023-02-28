@@ -7,6 +7,9 @@
 class Graph {
   struct Cmp {
     bool operator() (const std::pair<int, int>& a, const std::pair<int, int>& b) const {
+      if (a.second == b.second) {
+        return a.first < b.first;
+      }
       return (a.second < b.second);
     }
   };
@@ -29,7 +32,6 @@ class Graph {
     std::vector<bool> checked(n_, false); // попадала ли вершина в s
     d[start] = 0;
     dist_[start] = 0;
-    checked[start] = true;
     for (auto i: verticies_[start]) {
       d[i.first] = i.second;
     }
@@ -42,19 +44,14 @@ class Graph {
       dist_[i] = d[i];
       checked[i] = true;
       for (auto j : verticies_[i]) {
-        // if (used[j.first] == Was) {
-        //   continue;
-        // }
-        // if (used[j.first] == Will) {
-        //   s.insert({j.first, d[i] + j.second});
-        //   used[j.first] = Is;
-        //   d[j.first] = d[i] + j.second;
-        //   continue;
-        // }
-        if (checked[j.first] || (d[i] + j.second >= d[j.first])) {
+        if (checked[j.first]) {
+          continue;
+        }
+        if (d[i] + j.second >= d[j.first]) {
           continue;
         }
         not_s.erase({j.first, d[j.first]});
+        d[j.first] = d[i] + j.second;
         not_s.insert({j.first, d[i] + j.second});
       }
     }

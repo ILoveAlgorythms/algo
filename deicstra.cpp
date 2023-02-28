@@ -7,6 +7,9 @@
 class Graph {
   struct Cmp {
     bool operator() (const std::pair<int, int>& a, const std::pair<int, int>& b) const {
+      if (a.second == b.second) { // set считает элементы равными, если !(a < b) && !(b < a)
+        return a.first < b.first;
+      }
       return (a.second < b.second);
     }
   };
@@ -23,38 +26,31 @@ class Graph {
   friend std::ostream& operator<<(std::ostream& os, Graph& g);
 
   void FindWays(int start) {
-    enum Were {Was, Is, Will};
     std::vector<int> d(n_, inf);
-    std::set<std::pair<int, int>, Cmp> s; // first -- вершина, second -- d[first]
+    std::set<std::pair<int, int>, Cmp> not_s; // first -- вершина, second -- d[first]
     dist_.resize(n_, inf);
-    std::vector<Were> used(n_, Will); // попадала ли вершина в s
+    std::vector<bool> checked(n_, false); // попадала ли вершина в s
     d[start] = 0;
     dist_[start] = 0;
-    used[start] = Is;
+    checked[start] = true;
     for (auto i: verticies_[start]) {
       d[i.first] = i.second;
     }
-    s.insert({start, 0});
-    while (!s.empty()) {
-      auto i = s.begin()->first;
-      s.erase(*s.begin());
+    for (int i = 0; i < n_; ++i) {
+      not_s.insert({i, d[i]});
+    }
+    while (!not_s.empty()) {
+      auto i = not_s.begin()->first;
+      not_s.erase(*not_s.begin());
       dist_[i] = d[i];
-      used[i] = Was;
+      checked[i] = true;
       for (auto j : verticies_[i]) {
-        if (used[j.first] == Was) {
+        if (checked[j.first] || (d[i] + j.second >= d[j.first])) {
           continue;
         }
-        if (used[j.first] == Will) {
-          s.insert({j.first, d[i] + j.second});
-          used[j.first] = Is;
-          d[j.first] = d[i] + j.second;
-          continue;
-        }
-        if (d[i] + j.second >= d[j.first]) {
-          continue;
-        }
-        s.erase({j.first, d[j.first]});
-        s.insert({j.first, d[i] + j.second});
+        not_s.erase({j.first, d[j.first]});
+        d[j.first] = d[i] + j.second;
+        not_s.insert({j.first, d[i] + j.second});
       }
     }
   }
@@ -72,6 +68,7 @@ std::istream& operator>>(std::istream& is, Graph& g) {
       continue;
     }
     g.verticies_[x].push_back(std::make_pair(y, w));
+    g.verticies_[y].push_back(std::make_pair(x, w));
   }
   return is;
 }
@@ -89,13 +86,17 @@ int main() {
   // std::cin.tie(nullptr);
   int n;
   int m;
+  int N;
+  std::cin >> N;
   int start;
-  std::cin >> n >> m;
-  Graph g(n, m);
-  std::cin >> g;
-  std::cin >> start;
-  // --start;
-  g.FindWays(start);
-  std::cout << g;
+  for (int i = 0; i < N; ++i) {
+    std::cin >> n >> m;
+    Graph g(n, m);
+    std::cin >> g;
+    std::cin >> start;
+    // --start;
+    g.FindWays(start);
+    std::cout << g;
+  }
   return 0;
 }
