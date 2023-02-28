@@ -10,8 +10,8 @@ struct Cmp {
 
 int main() {
   std::set<std::pair<int, int>, Cmp> s; // first -- вершина, second -- *d[first]
-  s.insert({3, 2});
-  s.insert({1, 42});
+  s.insert({3, -2});
+  s.insert({1, 428});
   s.insert({2, 41});
   std::cout << (*s.begin()).second << " ";
   s.erase(*s.begin());

@@ -2,23 +2,25 @@
 #include <set>
 #include <vector>
 //расстояния от одной до всех
-#define inf 2'009'000'999
-
 class Graph {
   struct Cmp {
-    bool operator() (const std::pair<int, int>& a, const std::pair<int, int>& b) const {
+    bool operator()(const std::pair<int, int>& a,
+                    const std::pair<int, int>& b) const {
       if (a.second == b.second) {
         return a.first < b.first;
       }
       return (a.second < b.second);
     }
   };
+
  protected:
   int n_;
   int m_;
   std::vector<std::vector<std::pair<int, int>>> verticies_;
   std::vector<int> dist_;
+
  public:
+  int inf = 2'009'000'999;
   Graph(int n, int m) : n_(n), m_(m) {
     verticies_.resize(n, std::vector<std::pair<int, int>>());
   }
@@ -27,12 +29,12 @@ class Graph {
 
   void FindWays(int start) {
     std::vector<int> d(n_, inf);
-    std::set<std::pair<int, int>, Cmp> not_s; // first -- вершина, second -- d[first]
+    std::set<std::pair<int, int>, Cmp> not_s;
     dist_.resize(n_, inf);
-    std::vector<bool> checked(n_, false); // попадала ли вершина в s
+    std::vector<bool> checked(n_, false);
     d[start] = 0;
     dist_[start] = 0;
-    for (auto i: verticies_[start]) {
+    for (auto i : verticies_[start]) {
       d[i.first] = i.second;
     }
     for (int i = 0; i < n_; ++i) {
@@ -64,8 +66,6 @@ std::istream& operator>>(std::istream& is, Graph& g) {
   int w;
   for (int i = 0; i < g.m_; ++i) {
     is >> x >> y >> w;
-    // --x;
-    // --y;
     if (x == y) {
       continue;
     }
@@ -88,10 +88,10 @@ int main() {
   // std::cin.tie(nullptr);
   int n;
   int m;
-  int N;
-  std::cin >> N;
+  int calls;
+  std::cin >> calls;
   int start;
-  for (int i = 0; i < N; ++i) {
+  for (int i = 0; i < calls; ++i) {
     std::cin >> n >> m;
     Graph g(n, m);
     std::cin >> g;

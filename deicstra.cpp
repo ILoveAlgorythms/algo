@@ -86,17 +86,13 @@ int main() {
   // std::cin.tie(nullptr);
   int n;
   int m;
-  int N;
-  std::cin >> N;
   int start;
-  for (int i = 0; i < N; ++i) {
-    std::cin >> n >> m;
-    Graph g(n, m);
-    std::cin >> g;
-    std::cin >> start;
-    // --start;
-    g.FindWays(start);
-    std::cout << g;
-  }
+  std::cin >> n >> m;
+  Graph g(n, m);
+  std::cin >> g;
+  std::cin >> start;
+  // --start;
+  g.FindWays(start);
+  std::cout << g;
   return 0;
 }

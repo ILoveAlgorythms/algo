@@ -1,101 +1,104 @@
-#include <deque>
 #include <iostream>
+#include <set>
 #include <vector>
-
+//расстояния от одной до всех
 class Graph {
+  struct Cmp {
+    bool operator()(const std::pair<int, int>& a,
+                    const std::pair<int, int>& b) const {
+      if (a.second == b.second) {
+        return a.first < b.first;
+      }
+      return (a.second < b.second);
+    }
+  };
+
  protected:
   int n_;
   int m_;
-  enum Color { White, Grey, Black };
-  std::vector<Color> vert_colors_;
-  std::vector<int> dist_;
   std::vector<std::vector<std::pair<int, int>>> verticies_;
-  std::vector<std::deque<int>> q_;
-  int max_w_ = 1;
-
-  void OneKBfs(int v) {
-    q_[0].push_back(v);
-    int tec = 0;
-    int vert_in_q = 1;
-    while (vert_in_q != 0) {
-      for (; q_[tec % (max_w_ + 1)].empty(); ++tec) {
-      }
-      auto& tec_q = q_[tec % (max_w_ + 1)];
-
-      auto j = tec_q.front();
-      tec_q.pop_front();
-      --vert_in_q;
-      if (vert_colors_[j] == Black) {
-        continue;
-      }
-      vert_colors_[j] = Black;
-
-      for (auto i : verticies_[j]) {
-        if (vert_colors_[i.first] != White) {
-          continue;
-        }
-        if ((dist_[j] + i.second) > dist_[i.first]) {
-          continue;
-        }
-        dist_[i.first] = dist_[j] + i.second;
-        ++vert_in_q;
-        q_[dist_[i.first] % (max_w_ + 1)].push_back(i.first);
-      }
-    }
-  }
+  std::vector<int> dist_;
 
  public:
+  int inf = 2'009'000'999;
   Graph(int n, int m) : n_(n), m_(m) {
-    vert_colors_.resize(n, White);
-    dist_.resize(n, 1100000);
     verticies_.resize(n, std::vector<std::pair<int, int>>());
   }
   friend std::istream& operator>>(std::istream& is, Graph& g);
+  friend std::ostream& operator<<(std::ostream& os, Graph& g);
 
-  int FindWay(int start, int finish) {
-    q_.resize(max_w_ + 1, std::deque<int>{});
+  void FindWays(int start) {
+    std::vector<int> d(n_, inf);
+    std::set<std::pair<int, int>, Cmp> not_s;
+    dist_.resize(n_, inf);
+    std::vector<bool> checked(n_, false);
+    d[start] = 0;
     dist_[start] = 0;
-    int dist0 = dist_[finish];
-    OneKBfs(start);
-    return ((dist0 == dist_[finish]) ? (-1) : dist_[finish]);
+    for (auto i : verticies_[start]) {
+      d[i.first] = i.second;
+    }
+    for (int i = 0; i < n_; ++i) {
+      not_s.insert({i, d[i]});
+    }
+    while (!not_s.empty()) {
+      auto i = not_s.begin()->first;
+      not_s.erase(*not_s.begin());
+      dist_[i] = d[i];
+      checked[i] = true;
+      for (auto j : verticies_[i]) {
+        if (checked[j.first]) {
+          continue;
+        }
+        if (d[i] + j.second >= d[j.first]) {
+          continue;
+        }
+        not_s.erase({j.first, d[j.first]});
+        d[j.first] = d[i] + j.second;
+        not_s.insert({j.first, d[i] + j.second});
+      }
+    }
   }
 };
 
 std::istream& operator>>(std::istream& is, Graph& g) {
-  int max_w = 0;
   int x;
   int y;
   int w;
   for (int i = 0; i < g.m_; ++i) {
     is >> x >> y >> w;
-    --x;
-    --y;
     if (x == y) {
       continue;
     }
     g.verticies_[x].push_back(std::make_pair(y, w));
-    max_w = std::max(max_w, w);
+    g.verticies_[y].push_back(std::make_pair(x, w));
   }
-  g.max_w_ = max_w;
   return is;
 }
 
+std::ostream& operator<<(std::ostream& os, Graph& g) {
+  for (int j = 0; j < g.n_; ++j) {
+    os << g.dist_[j] << " ";
+  }
+  os << "\n";
+  return os;
+}
+
 int main() {
-  std::ios_base::sync_with_stdio(false);
-  std::cin.tie(nullptr);
+  // std::ios_base::sync_with_stdio(false);
+  // std::cin.tie(nullptr);
   int n;
   int m;
+  int calls;
+  std::cin >> calls;
   int start;
-  int finish;
-  std::cin >> n >> m >> start >> finish;
-  --start;
-  --finish;
-  Graph g(n, m);
-  std::cin >> g;
-  if (start == finish) {
-    std::cout << "0\n" << start;
-    return 0;
+  for (int i = 0; i < calls; ++i) {
+    std::cin >> n >> m;
+    Graph g(n, m);
+    std::cin >> g;
+    std::cin >> start;
+    // --start;
+    g.FindWays(start);
+    std::cout << g;
   }
-  std::cout << g.FindWay(start, finish);
   return 0;
 }
