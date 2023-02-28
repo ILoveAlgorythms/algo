@@ -1,10 +1,20 @@
 #include<vector>
-#include<deque>
+#include<set>
 #include<iostream>
 
+struct Cmp {
+  bool operator() (const std::pair<int, int>& a, const std::pair<int, int>& b) const {
+    return (a.second < b.second);
+  }
+};
+
 int main() {
-  std::vector<std::vector<std::vector<int>>> dp;
-  dp.resize(1, std::vector<std::vector<int>>(2, std::vector<int>(3)));
-  dp[0][1][2];
+  std::set<std::pair<int, int>, Cmp> s; // first -- вершина, second -- *d[first]
+  s.insert({3, 2});
+  s.insert({1, 12});
+  s.insert({2, 41});
+  std::cout << (*s.begin()).second << " ";
+  s.erase(*s.begin());
+  std::cout << (*s.begin()).second;
   return 0;
 }
