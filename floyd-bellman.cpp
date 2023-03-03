@@ -1,4 +1,3 @@
-#include <deque>
 #include <iostream>
 #include <vector>
 // расстояние от одной вершины до всех остальных, 

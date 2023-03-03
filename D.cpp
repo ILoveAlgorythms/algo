@@ -1,17 +1,8 @@
 #include <iostream>
-#include <set>
 #include <vector>
-//расстояния от одной до всех
+
 class Graph {
-  struct Cmp {
-    bool operator()(const std::pair<int, int>& a,
-                    const std::pair<int, int>& b) const {
-      if (a.second == b.second) {
-        return a.first < b.first;
-      }
-      return (a.second < b.second);
-    }
-  };
+  const int kInf = 30'000;
 
  protected:
   int n_;
@@ -20,42 +11,32 @@ class Graph {
   std::vector<int> dist_;
 
  public:
-  int inf = 2'009'000'999;
   Graph(int n, int m) : n_(n), m_(m) {
-    verticies_.resize(n, std::vector<std::pair<int, int>>());
+    verticies_.resize(n_, std::vector<std::pair<int, int>>());
   }
   friend std::istream& operator>>(std::istream& is, Graph& g);
   friend std::ostream& operator<<(std::ostream& os, Graph& g);
 
   void FindWays(int start) {
-    std::vector<int> d(n_, inf);
-    std::set<std::pair<int, int>, Cmp> not_s;
-    dist_.resize(n_, inf);
-    std::vector<bool> checked(n_, false);
-    d[start] = 0;
-    dist_[start] = 0;
-    for (auto i : verticies_[start]) {
-      d[i.first] = i.second;
-    }
-    for (int i = 0; i < n_; ++i) {
-      not_s.insert({i, d[i]});
-    }
-    while (!not_s.empty()) {
-      auto i = not_s.begin()->first;
-      not_s.erase(*not_s.begin());
-      dist_[i] = d[i];
-      checked[i] = true;
-      for (auto j : verticies_[i]) {
-        if (checked[j.first]) {
+    dist_.resize(n_, kInf);
+    std::vector<std::vector<int>> dp;
+    dp.resize(n_, std::vector<int>(2, kInf));
+    dp[start][0] = 0;
+    dp[start][1] = 0;
+    for (int k = 1; k < n_; ++k) {
+      for (int i = 0; i < n_; ++i) {
+        if (dp[i][(k - 1) % 2] == kInf) {
           continue;
         }
-        if (d[i] + j.second >= d[j.first]) {
-          continue;
+        for (auto j : verticies_[i]) {
+          dp[j.first][k % 2] =
+              std::min(dp[j.first][k % 2], dp[i][(k - 1) % 2] + j.second);
         }
-        not_s.erase({j.first, d[j.first]});
-        d[j.first] = d[i] + j.second;
-        not_s.insert({j.first, d[i] + j.second});
       }
+    }
+
+    for (int i = 0; i < n_; ++i) {
+      dist_[i] = dp[i][(n_ - 1) % 2];
     }
   }
 };
@@ -66,11 +47,12 @@ std::istream& operator>>(std::istream& is, Graph& g) {
   int w;
   for (int i = 0; i < g.m_; ++i) {
     is >> x >> y >> w;
+    --x;
+    --y;
     if (x == y) {
       continue;
     }
     g.verticies_[x].push_back(std::make_pair(y, w));
-    g.verticies_[y].push_back(std::make_pair(x, w));
   }
   return is;
 }
@@ -84,21 +66,12 @@ std::ostream& operator<<(std::ostream& os, Graph& g) {
 }
 
 int main() {
-  // std::ios_base::sync_with_stdio(false);
-  // std::cin.tie(nullptr);
   int n;
   int m;
-  int calls;
-  std::cin >> calls;
-  int start;
-  for (int i = 0; i < calls; ++i) {
-    std::cin >> n >> m;
-    Graph g(n, m);
-    std::cin >> g;
-    std::cin >> start;
-    // --start;
-    g.FindWays(start);
-    std::cout << g;
-  }
+  std::cin >> n >> m;
+  Graph g(n, m);
+  std::cin >> g;
+  g.FindWays(0);
+  std::cout << g;
   return 0;
 }

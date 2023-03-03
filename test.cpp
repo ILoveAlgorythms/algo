@@ -1,20 +1,15 @@
-#include<vector>
-#include<set>
 #include<iostream>
 
-struct Cmp {
-  bool operator() (const std::pair<int, int>& a, const std::pair<int, int>& b) const {
-    return (a.second < b.second);
-  }
-};
-
 int main() {
-  std::set<std::pair<int, int>, Cmp> s; // first -- вершина, second -- *d[first]
-  s.insert({3, -2});
-  s.insert({1, 428});
-  s.insert({2, 41});
-  std::cout << (*s.begin()).second << " ";
-  s.erase(*s.begin());
-  std::cout << (*s.begin()).second;
+  std::pair<int, int> a[3] = {{1,11}, {2, 22},{3,33}};
+  for (auto [vertex, edge] : a) {
+    for (int i = 0; i < 10; ++i) {
+      if (i == 4) {
+        break;
+      }
+      std::cout << "3";
+    }
+    std::cout <<"\n";
+  }
   return 0;
 }
