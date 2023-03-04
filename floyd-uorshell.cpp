@@ -28,7 +28,7 @@ class Graph {
         dp[j][i.first][0] = i.second;
       }
     }
-    for (int k = 1; k < n_; ++k) {
+    for (int k = 0; k < n_ - 1; ++k) {
       for (int u = 0; u < n_; ++u) {
         for (int v = 0; v < n_; ++v) {
           // std::cout << k << " _ " << u << " _ " << v << " _ " << dp[u][k][k % 2] + dp[k][v][k % 2] << " ";
@@ -40,7 +40,7 @@ class Graph {
 
     for (int u = 0; u < n_; ++u) {
       for (int v = 0; v < n_; ++v) {
-        dist_[u][v] = dp[u][v][n_ % 2];
+        dist_[u][v] = dp[u][v][(n_ + 1)% 2];
       }
     }
   }
