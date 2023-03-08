@@ -8,20 +8,14 @@ class Graph {
   int n_;
   std::vector<std::vector<std::pair<int, int>>> verticies_;
   std::vector<std::vector<int>> dist_;
-  std::deque<int> ans_;
-  void Print() {
-    std::cout << "YES\n" << ans_.size();
-    for (auto i : ans_) {
-      std::cout << i + 1 << " ";
-    }
+  // std::vector<std::vector<int>> previous_in_loop_;
+ void Print() {
+    std::cout << "YES\n";
   }
 
+
   void FindTrace(int start, std::vector<std::vector<int>> previous) {
-    int i = start;
-    do {
-      ans_.push_back(i);
-      i = previous[start][i];
-    } while (i != start);
+    dist_[0].push_back(1);
   }
 
   int FindVertexInCycle(std::vector<std::vector<int>>& v) const {
@@ -91,26 +85,31 @@ class Graph {
     Print();
     return false;
   }
-
 };
 
 std::istream& operator>>(std::istream& is, Graph& g) {
   int w;
-  int i = 0;
-  for (; i < g.n_; ++i) {
+  for (int i = 0; i < g.n_; ++i) {
     for (int j = 0; j < g.n_; ++j) {
       is >> w;
       if (w == g.kInf || i == j) {
         continue;
       }
       g.verticies_[i].push_back(std::make_pair(j, w));
-      // std::cout << "i: " << i << "  j :  " << j << g.n_ - 1<< "\n";
     }
   }
-  // std::cout << "finish";
   return is;
 }
 
+std::ostream& operator<<(std::ostream& os, Graph& g) {
+  for (int i = 0; i < g.n_; ++i) {
+    for (int j = 0; j < g.n_; ++j) {
+      os << g.dist_[i][j] << " ";
+    }
+    os << "\n";
+  }
+  return os;
+}
 
 int main() {
   // std::ios_base::sync_with_stdio(false);
@@ -119,12 +118,9 @@ int main() {
   std::cin >> n;
   Graph g(n);
   std::cin >> g;
-  std::cout << "2312";
-  int a = 4;
-  std::cin >> a;
-  g.FindWays();
-  // if (g.FindWays()) {
-    // std::cout << "NO\n";
-  // }
+  if (g.FindWays()) {
+    std::cout << "NO\n";
+  }
+  std::cout << g;
   return 0;
 }
