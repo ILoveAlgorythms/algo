@@ -1,0 +1,47 @@
+
+# Форматирование кода в соответствии со стандартом Google
+
+# Базовый стиль, на который должны опираться настройки
+BasedOnStyle: Google
+
+# Ограничение длины строки
+ColumnLimit: 120
+
+# Размещение модификаторов доступа с их типами данных
+AccessTypeModifiers: 'false'
+
+# Разрешение разрыва многострочных строк
+AlwaysBreakBeforeMultilineStrings: 'false'
+
+# Разрешение коротких функций на одной строке (только inline-функции)
+AllowShortFunctionsOnASingleLine: 'InlineOnly'
+
+# Разрешение коротких операторов if на одной строке
+AllowShortIfStatementsOnASingleLine: 'true'
+
+# Разрешение коротких циклов на одной строке
+AllowShortLoopsOnASingleLine: 'true'
+
+# Отступ для меток case
+IndentCaseLabels: 'true'
+
+# Выравнивание указателей слева
+PointerAlignment: Left
+
+# Сортировать #include
+SortIncludes: 'true'
+
+# Сортировать using
+SortUsingDeclarations: 'false'
+
+# Убирать пробелы внутри скобок
+SpacesInParentheses: 'false'
+
+# Стандарт языка
+# Standard: Cpp17
+
+# Ширина табуляции
+TabWidth: 2
+
+# Использование табуляции
+UseTab: 'Never'
