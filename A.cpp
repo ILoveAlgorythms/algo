@@ -1,104 +1,77 @@
 #include <iostream>
 #include <set>
 #include <vector>
-//расстояния от одной до всех
-class Graph {
-  struct Cmp {
-    bool operator()(const std::pair<int, int>& a,
-                    const std::pair<int, int>& b) const {
-      if (a.second == b.second) {
-        return a.first < b.first;
-      }
-      return (a.second < b.second);
-    }
-  };
 
- protected:
-  int n_;
-  int m_;
-  std::vector<std::vector<std::pair<int, int>>> verticies_;
-  std::vector<int> dist_;
+class DSU {
+ private:
+  std::vector<int> ancestors_;
+  std::vector<int> depth_;
+  std::vector<int> friendshipstrongness_;
 
  public:
-  int inf = 2'009'000'999;
-  Graph(int n, int m) : n_(n), m_(m) {
-    verticies_.resize(n, std::vector<std::pair<int, int>>());
+  DSU(int n) {
+    ancestors_.resize(n);
+    for (int i = 0; i < n; ++i) {
+      ancestors_[i] = i;
+    }
+    depth_.resize(n, 0);
+    friendshipstrongness_.resize(n, 0);
   }
-  friend std::istream& operator>>(std::istream& is, Graph& g);
-  friend std::ostream& operator<<(std::ostream& os, Graph& g);
+  ~DSU() = default;
+  DSU() = default;
+  friend std::ostream& operator<<(std::ostream& os, DSU& g);
 
-  void FindWays(int start) {
-    std::vector<int> d(n_, inf);
-    std::set<std::pair<int, int>, Cmp> not_s;
-    dist_.resize(n_, inf);
-    std::vector<bool> checked(n_, false);
-    d[start] = 0;
-    dist_[start] = 0;
-    for (auto i : verticies_[start]) {
-      d[i.first] = i.second;
+  int FindSet(int elem) {
+    if (elem == ancestors_[elem]) {
+      return elem;
     }
-    for (int i = 0; i < n_; ++i) {
-      not_s.insert({i, d[i]});
+    ancestors_[elem] = FindSet(ancestors_[elem]);  // ?
+    return ancestors_[elem];
+  }
+  void Sex(int a, int b, int w) {  // возращает предка
+    a = FindSet(a);
+    b = FindSet(b);
+    if (a == b) {
+      friendshipstrongness_[a] += w;
+      return;
     }
-    while (!not_s.empty()) {
-      auto i = not_s.begin()->first;
-      not_s.erase(*not_s.begin());
-      dist_[i] = d[i];
-      checked[i] = true;
-      for (auto j : verticies_[i]) {
-        if (checked[j.first]) {
-          continue;
-        }
-        if (d[i] + j.second >= d[j.first]) {
-          continue;
-        }
-        not_s.erase({j.first, d[j.first]});
-        d[j.first] = d[i] + j.second;
-        not_s.insert({j.first, d[i] + j.second});
-      }
+    if (depth_[a] < depth_[b]) {
+      std::swap(a, b);
     }
+    friendshipstrongness_[a] += friendshipstrongness_[b] + w;
+    ancestors_[b] = a;  // родитель меньшего -- большее
+    if (depth_[a] == depth_[b]) {
+      ++depth_[a];
+    }
+  }
+  int FindFriendshipstrongness(int x) {
+    return friendshipstrongness_[FindSet(x)];
   }
 };
 
-std::istream& operator>>(std::istream& is, Graph& g) {
+int main() {
+  std::ios_base::sync_with_stdio(false);
+  std::cin.tie(nullptr);
+  int n;
+  int calls;
+  std::cin >> n >> calls;
+  DSU dcma(n);
+  int command;
   int x;
   int y;
   int w;
-  for (int i = 0; i < g.m_; ++i) {
-    is >> x >> y >> w;
-    if (x == y) {
-      continue;
-    }
-    g.verticies_[x].push_back(std::make_pair(y, w));
-    g.verticies_[y].push_back(std::make_pair(x, w));
-  }
-  return is;
-}
-
-std::ostream& operator<<(std::ostream& os, Graph& g) {
-  for (int j = 0; j < g.n_; ++j) {
-    os << g.dist_[j] << " ";
-  }
-  os << "\n";
-  return os;
-}
-
-int main() {
-  // std::ios_base::sync_with_stdio(false);
-  // std::cin.tie(nullptr);
-  int n;
-  int m;
-  int calls;
-  std::cin >> calls;
-  int start;
   for (int i = 0; i < calls; ++i) {
-    std::cin >> n >> m;
-    Graph g(n, m);
-    std::cin >> g;
-    std::cin >> start;
-    // --start;
-    g.FindWays(start);
-    std::cout << g;
+    std::cin >> command;
+    switch (command) {
+      case 1:
+        std::cin >> x >> y >> w;
+        dcma.Sex(x - 1, y - 1, w);
+        break;
+      case 2:
+        std::cin >> x;
+        std::cout << dcma.FindFriendshipstrongness(x - 1) << "\n";
+        break;
+    }
   }
   return 0;
 }

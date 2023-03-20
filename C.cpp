@@ -2,6 +2,7 @@
 #include <set>
 #include <vector>
 #include <algorithm>
+#include <deque>
 
 struct Edge {
   int v1, v2;
@@ -29,8 +30,6 @@ class Graph {
   int m_;
   std::vector<std::vector<Edge>> verticies_;
   std::vector<int> dist_;
-  std::vector<Edge> edges_;
-  
 
  public:
   const int kInf = 2'009'000'999; 
@@ -44,12 +43,22 @@ class Graph {
     for (int i = 0; i < n_; ++i) {
       std::sort(verticies_[i].begin(), verticies_[i].end(), Cmp());
     }
-    std::set<int> s;
-    s.insert(0);
     std::vector<Edge> mst;
-    std::set<Edge> edges;
+    std::deque<int> s;
+    s.push_back(0);
+    std::set<Edge, Cmp> edges;
+    std::vector<bool> used(n_, false);
+    used[0] = true;
     for (int i = 1; i < n_; ++i) {
-      for (int j = 0; )
+      auto vert = s.front();
+      s.push_front(vert);
+      used[vert] = true;
+      for (auto j : verticies_[vert]) {
+        if (!used[j.v2]) 
+        edges.insert(j);
+      }
+
+      mst.push_back(*edges.begin());
     }
     
     
@@ -67,7 +76,6 @@ std::istream& operator>>(std::istream& is, Graph& g) {
     }
     g.verticies_[x].push_back(Edge(x, y, w));
     g.verticies_[y].push_back(Edge(y, x, w));
-    edges_.push_back(Edge(y, x, w));
   }
   return is;
 }
