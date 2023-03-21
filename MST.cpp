@@ -25,9 +25,8 @@ class DSU {
     if (elem == ancestors_[elem]) {
       return elem;
     }
-    // ancestors_[elem] = FindSet(ancestors_[elem]);  // ?
-    // return ancestors_[elem];
-    return FindSet(ancestors_[elem]);
+    ancestors_[elem] = FindSet(ancestors_[elem]);  // ?
+    return ancestors_[elem];
   }
   bool Sex(int a, int b) {  // возращает true если уже
     a = FindSet(a);
