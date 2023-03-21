@@ -6,13 +6,10 @@ struct hui {
   int x;
   int y;
   hui(int x, int y) : x(x), y(y) {}
-  bool operator< (const hui& h) {
-    return x * y < h.x * h.y;
-  }
 };
 
 bool operator< (const hui& h, const hui& h2) {
-  return h2.x * h2.y < h.x * h.y;
+  return h.x * h.y < h2.x * h2.y;
 }
 
 int main() {

@@ -1,7 +1,7 @@
 #include <iostream>
 #include <set>
 #include <vector>
-//расстояния от одной до всех
+//система непересекающихся множеств
 class DSU {
  private:
   std::vector<int> ancestors_;
