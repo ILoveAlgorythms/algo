@@ -3,6 +3,7 @@
 #include <iostream>
 #include <queue>
 #include <vector>
+#include <math>
 
 class DSU {
  private:
@@ -67,6 +68,7 @@ class Graph {
   int n_;
   int m_;
   std::vector<Edge> edges_;
+  std::vector<std::vector<int>> dp_;
 
  public:
   Graph(int n, int m) : n_(n), m_(m) { edges_.resize(m); }
@@ -84,6 +86,9 @@ class Graph {
       ans += edg.w;
     }
     return ans;
+  }
+  void PredPr() {
+    dp_.resize(n_, std::vector<int> (std::log(n_) / std::log(2) + 1));
   }
 };
 
