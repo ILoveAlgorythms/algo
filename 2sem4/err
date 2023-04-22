@@ -1,0 +1,57 @@
+=================================================================
+==2177308==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x608000000088 at pc 0x55f74400a6e4 bp 0x7ffddf4f02f0 sp 0x7ffddf4f02e0
+READ of size 8 at 0x608000000088 thread T0
+    #0 0x55f74400a6e3 in Edge& std::vector<Edge, std::allocator<Edge> >::emplace_back<Edge>(Edge&&) (/windows/infa/2sem4/output/A+0x476e3)
+    #1 0x55f74400574c in std::vector<Edge, std::allocator<Edge> >::push_back(Edge&&) (/windows/infa/2sem4/output/A+0x4274c)
+    #2 0x55f744001fec in Graph::InsertEdge(int, int, int) (/windows/infa/2sem4/output/A+0x3efec)
+    #3 0x55f743ffe7da in operator>>(std::istream&, Graph&) (/windows/infa/2sem4/output/A+0x3b7da)
+    #4 0x55f743ffee79 in main (/windows/infa/2sem4/output/A+0x3be79)
+    #5 0x7fbaac55f082 in __libc_start_main ../csu/libc-start.c:308
+    #6 0x55f743ffd62d in _start (/windows/infa/2sem4/output/A+0x3a62d)
+
+0x608000000088 is located 8 bytes to the right of 96-byte region [0x608000000020,0x608000000080)
+allocated by thread T0 here:
+    #0 0x7fbaad4f5587 in operator new(unsigned long) ../../../../src/libsanitizer/asan/asan_new_delete.cc:104
+    #1 0x55f74401926d in __gnu_cxx::new_allocator<std::vector<Edge, std::allocator<Edge> > >::allocate(unsigned long, void const*) (/windows/infa/2sem4/output/A+0x5626d)
+    #2 0x55f744015b53 in std::allocator_traits<std::allocator<std::vector<Edge, std::allocator<Edge> > > >::allocate(std::allocator<std::vector<Edge, std::allocator<Edge> > >&, unsigned long) (/windows/infa/2sem4/output/A+0x52b53)
+    #3 0x55f7440111cd in std::_Vector_base<std::vector<Edge, std::allocator<Edge> >, std::allocator<std::vector<Edge, std::allocator<Edge> > > >::_M_allocate(unsigned long) (/windows/infa/2sem4/output/A+0x4e1cd)
+    #4 0x55f744009612 in std::vector<std::vector<Edge, std::allocator<Edge> >, std::allocator<std::vector<Edge, std::allocator<Edge> > > >::_M_fill_insert(__gnu_cxx::__normal_iterator<std::vector<Edge, std::allocator<Edge> >*, std::vector<std::vector<Edge, std::allocator<Edge> >, std::allocator<std::vector<Edge, std::allocator<Edge> > > > >, unsigned long, std::vector<Edge, std::allocator<Edge> > const&) (/windows/infa/2sem4/output/A+0x46612)
+    #5 0x55f7440054b6 in std::vector<std::vector<Edge, std::allocator<Edge> >, std::allocator<std::vector<Edge, std::allocator<Edge> > > >::resize(unsigned long, std::vector<Edge, std::allocator<Edge> > const&) (/windows/infa/2sem4/output/A+0x424b6)
+    #6 0x55f7440019fd in Graph::Graph(int, int) (/windows/infa/2sem4/output/A+0x3e9fd)
+    #7 0x55f743ffee63 in main (/windows/infa/2sem4/output/A+0x3be63)
+    #8 0x7fbaac55f082 in __libc_start_main ../csu/libc-start.c:308
+
+SUMMARY: AddressSanitizer: heap-buffer-overflow (/windows/infa/2sem4/output/A+0x476e3) in Edge& std::vector<Edge, std::allocator<Edge> >::emplace_back<Edge>(Edge&&)
+Shadow bytes around the buggy address:
+  0x0c107fff7fc0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0c107fff7fd0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0c107fff7fe0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0c107fff7ff0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0c107fff8000: fa fa fa fa 00 00 00 00 00 00 00 00 00 00 00 00
+=>0x0c107fff8010: fa[fa]fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0c107fff8020: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0c107fff8030: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0c107fff8040: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0c107fff8050: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0c107fff8060: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+  Shadow gap:              cc
+==2177308==ABORTING
