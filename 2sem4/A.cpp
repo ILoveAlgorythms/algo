@@ -4,7 +4,7 @@
 enum Color {White, Grey, Black};
 const int kInf = 2'009'000'999;
 
-struct Edge {
+struct EType {
   static int id_counter;
   int id;
   int from;
@@ -12,16 +12,16 @@ struct Edge {
   int residualcapacity;
   int flow = 0; // in main net
   int maxcapacity = -1;
-  Edge* brother = nullptr;
-  Edge() {}
-  Edge(const Edge&) = default;
-  Edge(int from, int to, int capacity) : from(from), to(to), residualcapacity(capacity) {
+  EType* brother = nullptr;
+  EType() {}
+  EType(const EType&) = default;
+  EType(int from, int to, int capacity) : from(from), to(to), residualcapacity(capacity) {
     id = id_counter;
     ++id_counter;
     maxcapacity = capacity;
   }
-  Edge Residual() {
-    Edge ans(to, from, 0);
+  EType Residual() {
+    EType ans(to, from, 0);
     brother = &ans;
     ans.brother = this;
     return ans;
@@ -42,24 +42,24 @@ class Graph {
  protected:
   int n_;
   int m_;
-  std::vector<std::vector<Edge>> edges_;
+  std::vector<std::vector<EType>> edges_;
  public:
   Graph(int n, int m) : n_(n), m_(m) {
-    edges_.resize(n, std::vector<Edge>());
+    edges_.resize(n, std::vector<EType>());
   }
   int N() {
     return n_;
   }
 
   void InsertEdge(int from, int to, int capacity) {
-    edges_[from].push_back(Edge(from, to, capacity));
+    edges_[from].push_back(EType(from, to, capacity));
     edges_[to].push_back(edges_[from].back().Residual());
   }
   friend std::istream& operator>>(std::istream& is, Graph& g);
   friend std::ostream& operator<<(std::ostream& os, Graph& g);
   friend class Net;
 
-  void Dfs(int vert, int goal, std::vector<Color>& vert_colors, std::vector<Edge>& trace) {
+  void Dfs(int vert, int goal, std::vector<Color>& vert_colors, std::vector<EType>& trace) {
     vert_colors[vert] = Grey;
     for (auto i : edges_[vert]) {
       if (vert_colors[i.to] != White || i.residualcapacity == i.flow) {
@@ -88,14 +88,14 @@ class Net {
   Net(Graph g, int start, int finish) : graph_(g), residualgraph_(g), start(start), finish(finish) {}
   Net(const Net& n) = delete;
 
-  std::vector<Edge> FindWay() {
-    std::vector<Edge> ans;
+  std::vector<EType> FindWay() {
+    std::vector<EType> ans;
     std::vector<Color> colors(graph_.N(), White);
     graph_.Dfs(start, finish, colors, ans);
     return ans;
   }
 
-  void Update(std::vector<Edge>& trace, int addflow) {
+  void Update(std::vector<EType>& trace, int addflow) {
     for (auto& i : trace) {
       i.flow += addflow;
       i.residualcapacity -= addflow;
@@ -138,7 +138,7 @@ std::istream& operator>>(std::istream& is, Graph& g) {
     } if (connected[y][x]) {
       ++(g.m_);
       ++(g.n_);
-      g.edges_.push_back(std::vector<Edge>());
+      g.edges_.push_back(std::vector<EType>());
       g.InsertEdge(g.m_ - 1, y, w);
       g.InsertEdge(x, g.m_ - 1, w);
       continue;
@@ -149,7 +149,7 @@ std::istream& operator>>(std::istream& is, Graph& g) {
   return is;
 }
 
-int Edge::id_counter = 0;
+int EType::id_counter = 0;
 
 int main() {
   // std::ios_base::sync_with_stdio(false);

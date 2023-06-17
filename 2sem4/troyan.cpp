@@ -4,7 +4,7 @@
 
 const int kInf = 2'009'000'999;
 
-struct Edge {
+struct EType {
   int64_t to_vertex; // куда идет ребро
   int64_t flow; // поток по ребру
   int64_t capacity; // пропускная способность
@@ -13,11 +13,11 @@ struct Edge {
     return capacity - flow;
   }
 
-  Edge(int64_t to_vertex, int64_t capacity) : to_vertex(to_vertex), capacity(capacity), flow(0) {
+  EType(int64_t to_vertex, int64_t capacity) : to_vertex(to_vertex), capacity(capacity), flow(0) {
   }
 };
 
-void AddEdge(std::vector<std::vector<int64_t>>& graph, std::vector<Edge>& edges, int64_t from, int64_t to, int64_t capacity) {
+void AddEdge(std::vector<std::vector<int64_t>>& graph, std::vector<EType>& edges, int64_t from, int64_t to, int64_t capacity) {
   edges.emplace_back(to, capacity);
   graph[from].emplace_back(edges.size() - 1);
   edges.emplace_back(from, 0); // back edge capacity = 0
@@ -26,7 +26,7 @@ void AddEdge(std::vector<std::vector<int64_t>>& graph, std::vector<Edge>& edges,
 
 int64_t FindIncreasingPath(
   std::vector<std::vector<int64_t>>& graph, 
-  std::vector<Edge>& edges, 
+  std::vector<EType>& edges, 
   std::vector<size_t>& used,
   size_t phase,
   int64_t v,
@@ -69,7 +69,7 @@ int64_t FindIncreasingPath(
 
 int64_t MaxFlow(
   std::vector<std::vector<int64_t>>& graph, 
-  std::vector<Edge>& edges, 
+  std::vector<EType>& edges, 
   int64_t s, 
   int64_t t
 ) {
@@ -87,7 +87,7 @@ int64_t MaxFlow(
 }
 
 int main() {
-  std::vector<Edge> edges;
+  std::vector<EType> edges;
   size_t n;
   size_t m;
   std::cin >> n >> m;

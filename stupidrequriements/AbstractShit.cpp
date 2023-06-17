@@ -2,7 +2,8 @@
 #include <iostream>
 #include <unordered_map>
 #include <numeric> 
-
+#include <functional> 
+#include <algorithm>
 template <class T>
 using FilterFunction = std::function<bool(const T&)>;
 
@@ -15,7 +16,7 @@ class IteratorImpl {
       VType v,
       typename std::vector<VType>::iterator begin, 
       typename std::vector<VType>::iterator end, 
-      const FilterFunction<EType>& filter
+      const FilterFunction<EType> filter
     ) : v_(v), now_(begin), end_(end), filter_(filter) {
       if (now_ != end_) {
         now_edge_ = {v_, *now_};
@@ -31,6 +32,7 @@ class IteratorImpl {
         }
         now_edge_ = {v_, *now_};
       } while (!filter_(now_edge_) && now_ != end_);
+      // }
       return *this;
     }
     
@@ -59,7 +61,7 @@ class IteratorImpl {
     VType v_;
     typename std::vector<VType>::iterator now_;
     typename std::vector<VType>::iterator end_;
-    const FilterFunction<EType>& filter_;
+    const FilterFunction<EType> filter_;
 };
 
 template <class VType = size_t, class EType = std::pair<VType, VType>>
@@ -82,14 +84,74 @@ public:
   
 };
 
-template <class VType = size_t, class EType = std::pair<VType, VType>>
+//      PAIN           !      :)
+// HAHAHAHAHAHAHAHAHAHAHAAHAHAHA
+// UAHAHAHAHAHAHAHAHAHHAHHAHAHAH
+// I  WANT TO LIVE             !
+template <typename VType = size_t, typename EType = std::pair<VType, VType>>
 class MatrixGraph : public Graph<VType, EType> {
-  private: 
-    // YOUR PAIN, MY FRIEND!      :)
-    // HAHAHAHAHAHAHAHAHAHAHAAHAHAHA
-    // UAHAHAHAHAHAHAHAHAHHAHHAHAHAH
-    // IF WANT TO LIVE TRY TO DO IT!
+ public:
+  MatrixGraph(const std::vector<VType>& vertexes, const std::vector<EType>& edges)
+      : Graph<VType, EType>(vertexes, edges.size()) {
+    for (auto& vertex : vertexes) {
+      matrix_[vertex] = std::unordered_map<VType, EType>();
+    }
+    for (auto& edge : edges) {
+      matrix_[edge.first][edge.second].first = true;
+      matrix_[edge.first][edge.second].second = edge;
+    }
+  }
+  std::vector<VType> Getvertices() override {
+    return Graph<VType, EType>::vertices_;
+  }
+  // std::vector<VType> GetNeighbours(VType vert) override {
+  //   std::vector<VType> answer;
+  //   for (auto& vertex : Graph<VType, EType>::vertecies) {
+  //     if (matrix_[vert].contains(vertex)) {
+  //       answer.push_back(vertex);
+  //     }
+  //   }
+  //   return answer;
+  // // }
+  // typename std::vector<VType>::Iterator NeighboursBegin(VType vert) override {
+  //   return GetNeighbours(vert).begin();
+  // }
+  // typename std::vector<VType>::Iterator NeighboursEnd(VType vert) override {
+  //   return GetNeighbours(vert).end();
+  // }
+
+  // IteratorImpl<VType, EType> NeighboursIt (
+  //   VType v, 
+  //   const FilterFunction<EType>& filter) {
+  //     std::vector<VType> ans;
+  //     for (auto& vertex : Graph<VType, EType>::vertex) {
+  //       if (matrix_[v].contains(vertex)) {
+  //         ans.push_back(vertex);
+  //       }
+  //     }
+  //     return ans;
+  //   }
+
+ protected:
+  std::unordered_map<VType, std::unordered_map<VType, std::pair<bool, EType>>>
+      matrix_;
+
 };
+
+
+template <class VType = size_t, class EType = std::pair<VType, VType>>
+class MatrixGraphNoOrient : public MatrixGraph<VType, EType> {
+ public:
+  MatrixGraphNoOrient(const std::vector<VType>& verts,
+                        const std::vector<EType>& edges)
+      : MatrixGraph<VType, EType>(verts, edges) {
+    for (auto& edge : edges) {
+      MatrixGraph<VType, EType>::matrix_[edge.second][edge.first].first = true;
+      MatrixGraph<VType, EType>::matrix_[edge.second][edge.first].second = edge;
+    }
+  }
+};
+
 
 template <class VType = size_t, class EType = std::pair<VType, VType>>
 class ListGraph : public Graph<VType, EType> {
@@ -141,10 +203,10 @@ class ListGraph : public Graph<VType, EType> {
 };
 
 template <class VType = size_t, class EType = std::pair<VType, VType>> 
-class UndirectedListGraph : public ListGraph<VType, EType> {
+class ListGraphNoOrient : public ListGraph<VType, EType> {
   public:
     using ListGraph<VType, EType>::adjacency_lists_;
-    UndirectedListGraph(
+    ListGraphNoOrient(
       const std::vector<VType>& vertexes, 
       const std::vector<EType>& edges
     ) : ListGraph<VType, EType>(vertexes, edges) {
@@ -192,24 +254,54 @@ size_t CountOfComponents(Graph& graph) {
 }
 
 
-int main() {
-  ListGraph<size_t> g({0,1,2,3,4}, {{0,1}, {1,2}, {3,4}, {0, 2}, {0, 7}});
-  using EType = typename ListGraph<size_t>::EdgeType;
-  for (auto edge : g.NeighboursIt(0, [](const EType& edge) { return true;})) {
-    std::cout << edge.first << " " << edge.second << std::endl;
+template <class Vertex, class Edge>
+class BfsVisitor {
+ public:
+  virtual void Visit(const Edge& e) = 0;
+  virtual ~BfsVisitor() = default;
+};
+
+template <class VType = size_t,class EType = std::pair<VType, VType>>
+class BfsAncestorVisitor :  BfsVisitor<VType, EType> {
+ public:
+  void Visit(const EType& edge) override { list_[edge.second] = edge.first; }
+  std::unordered_map<VType, VType> GetMap() const { return list_; }
+  VType GetAncestor(const VType& vert) { return list_[vert]; }
+ private:
+  std::unordered_map<VType, VType> list_;
+};
+
+std::istream& operator>>(std::istream& is, std::vector<std::pair<int, int>>& adjajencylist) {
+  for (int i = 0; i < adjajencylist.size(); ++i) {
+    int x;
+    int y;
+    is >> x >> y;
+    --x;
+    --y;
+    adjajencylist[i] = {x, y};
   }
+  return is;
+}
 
-  UndirectedListGraph<size_t> g2({0,1,2,3,4}, {{0,1}, {1,2}, {3,4}, {0, 2}});
-  std::cout << CountOfComponents(g2) << std::endl; // must be 2
 
-  UndirectedListGraph<size_t> g3({0,1,2,3,4,5,6,7}, {{0,1}, {1,2}, {3,4}, {0, 2}, {6,7}, {7, 6}});
-  std::cout << CountOfComponents(g3) << std::endl; // must be 4
-
-  UndirectedListGraph<std::string> g4(
-    {"a","b","c","d","e"}, 
-    {{"a","b"}, {"b","c"}, {"d","e"}, {"a", "c"}}
-  );
-  std::cout << CountOfComponents(g4) << std::endl; // must be 2
-
+int main() {
+  int n;
+  int m;
+  std::cin >> n >> m;
+  int start;
+  int finish;
+  std::cin >> start >> finish;
+  --start;
+  --finish;
+  std::vector<std::pair<int, int>> adjajencylist(m);
+  std::cin >> adjajencylist;
+  if (start == finish) {
+    std::cout << "0\n" << start;
+    return 0;
+  }
+  ListGraph
+  if (g.FindBestWay(start, finish)) {
+    std::cout << -1;
+  }
   return 0;
 }

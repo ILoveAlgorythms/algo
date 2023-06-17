@@ -48,35 +48,35 @@ class DSU {
   }
 };
 
-struct Edge {
+struct EType {
   static constexpr int kInf = 201;
   int id;
   int v1;
   int v2;
   int w;
-  Edge() = default;
-  Edge(const Edge& e) = default;
+  EType() = default;
+  EType(const EType& e) = default;
   void Make(int idd, int v11, int v22, int ww) {
     id = idd;
     v1 = v11;
     v2 = v22;
     w = ww;
   }
-  bool operator<(const Edge& e) const { return w > e.w; }
+  bool operator<(const EType& e) const { return w > e.w; }
 };
 
 class Graph {
  protected:
   int n_;
   int m_;
-  std::vector<Edge> edges_;
+  std::vector<EType> edges_;
 
  public:
   Graph(int n, int m) : n_(n), m_(m) { edges_.resize(m); }
   friend std::istream& operator>>(std::istream& is, Graph& g);
   friend std::ostream& operator<<(std::ostream& os, Graph& g);
   int FindStream(int a, int b) {
-    int ans = Edge::kInf;
+    int ans = EType::kInf;
     DSU all_edges(n_);
     for (auto& i : edges_) {
       all_edges.Sex(i.v1, i.v2);

@@ -45,27 +45,27 @@ class DSU {
   }
 };
 
-struct Edge {
+struct EType {
   int id;
   int v1;
   int v2;
   int64_t w;
-  Edge() = default;
-  Edge(const Edge& e) = default;
+  EType() = default;
+  EType(const EType& e) = default;
   void Make(int idd, int v11, int v22, int ww) {
     id = idd;
     v1 = v11;
     v2 = v22;
     w = ww;
   }
-  bool operator<(const Edge& e) const { return w < e.w; }
+  bool operator<(const EType& e) const { return w < e.w; }
 };
 
 class Graph {
  protected:
   int n_;
   int m_;
-  std::vector<Edge> edges_;
+  std::vector<EType> edges_;
 
  public:
   Graph(int n, int m) : n_(n), m_(m) { edges_.resize(m); }
