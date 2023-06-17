@@ -15,6 +15,7 @@ class Deque {
  private:
   struct Block {
     std::vector<T> things;
+    
   };
   
   std::vector<Block> blocks_;
