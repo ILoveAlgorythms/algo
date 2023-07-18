@@ -16,7 +16,7 @@ class Graph {
   friend std::istream& operator>>(std::istream& is, Graph& g);
   friend std::ostream& operator<<(std::ostream& os, Graph& g);
 
-  int FindWays() {
+  void FindWays() {
     dist_.resize(n_, std::vector<int>(n_, 110000));
     std::vector<std::vector<std::vector<int>>> dp;
     dp.resize(n_, std::vector<std::vector<int>>(n_, std::vector<int>(2, 110000)));
@@ -28,19 +28,19 @@ class Graph {
         dp[j][i.first][0] = i.second;
       }
     }
-    for (int k = 0; k < n_ - 1; ++k) {
+    for (int k = 0; k < n_; ++k) { //n_ -1?
       for (int u = 0; u < n_; ++u) {
         for (int v = 0; v < n_; ++v) {
           // std::cout << k << " _ " << u << " _ " << v << " _ " << dp[u][k][k % 2] + dp[k][v][k % 2] << " ";
           dp[u][v][(k + 1) % 2] = std::min(dp[u][k][k % 2] + dp[k][v][k % 2], dp[u][v][k % 2]);
         }
       }
-      std::cout << "\n";
+      // std::cout << "\n";
     }
 
     for (int u = 0; u < n_; ++u) {
       for (int v = 0; v < n_; ++v) {
-        dist_[u][v] = dp[u][v][(n_ + 1)% 2];
+        dist_[u][v] = dp[u][v][(n_ )% 2];
       }
     }
   }
