@@ -1,9 +1,14 @@
 #include<iostream>
 
+class test { 
+ private:
+  int a;
+  friend int f(test& t);
+};
 
-int main() 
-{
-  int G = 3;
-  std::cout << G;
+int main()  {
+  std::pair<int, int> a;
+  std::cin >> a;
+  std::cout << a;
   return 0;
 }
