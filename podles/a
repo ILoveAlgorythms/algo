@@ -1,0 +1,56 @@
+// template <class VType = size_t, class EType = std::pair<VType, VType>>
+// class IteratorImpl {
+//   public:
+//     using iterator = IteratorImpl;
+     
+//     IteratorImpl(
+//       VType v,
+//       typename std::vector<VType>::iterator begin, 
+//       typename std::vector<VType>::iterator end, 
+//       const FilterFunction<EType> filter
+//     ) : v_(v), now_(begin), end_(end), filter_(filter) {
+//       if (now_ != end_) {
+//         now_edge_ = {v_, *now_};
+//         if (!filter_(now_edge_)) { ++*this; }
+//       }
+//     }
+    
+//     IteratorImpl& operator++() {
+//       do {
+//         ++now_;
+//         if (now_ == end_) {
+//           return *this;
+//         }
+//         now_edge_ = {v_, *now_};
+//       } while (!filter_(now_edge_) && now_ != end_);
+//       // }
+//       return *this;
+//     }
+    
+//     bool operator==(const IteratorImpl& other) const {
+//       return now_ == other.now_;
+//     }
+
+//     bool operator!=(const IteratorImpl& other) const {
+//       return now_ != other.now_;
+//     }
+
+//     IteratorImpl begin() const {
+//       return *this;
+//     }
+
+//     IteratorImpl end() const {
+//       return {v_, end_, end_, filter_};
+//     }
+
+//     const EType& operator*() {
+//       return now_edge_;
+//     }
+
+//   private:
+//     EType now_edge_;
+//     VType v_;
+//     typename std::vector<VType>::iterator now_;
+//     typename std::vector<VType>::iterator end_;
+//     const FilterFunction<EType> filter_;
+// };
